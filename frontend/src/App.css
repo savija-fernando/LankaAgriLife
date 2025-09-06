@@ -1,38 +1,89 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* ========== Header ========== */
+.header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  font-family: 'Montserrat', sans-serif;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding: 15px 40px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+}
+
+.header .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2a9d8f;
+}
+
+.header nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #333;
+}
+
+/* ========== Hero Section ========== */
+.hero {
+  background: 
+    linear-gradient(to right, rgba(34, 139, 34, 0.7), rgba(0, 0, 0, 0.2)), 
+    url('./assets/hero.png');
+  font-family: 'Montserrat', sans-serif;
+  background-size: cover;
   color: white;
+  text-align:left;
+  height: 60vh;
+  padding: 100px 40px;
+  border-radius: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.hero h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3rem; /* 48px */
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hero h1 span {
+  color: #f1c40f; /* Golden yellow for highlight */
+}
+
+
+.hero p {
+  font-size: 1.25rem; /* 20px */
+  margin-top: 20px;
+  max-width: 600px;
+}
+
+.hero button {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ========== Buttons ========== */
+.btn-primary {
+  background-color: #2a9d8f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #f4a261;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ========== Footer ========== */
+.footer {
+  background-color: #264653;
+  color: white;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
 }
