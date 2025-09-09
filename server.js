@@ -24,6 +24,9 @@ mongoose.connect(URL)
 const RevenueRouter=require("./routes/Revenue");
 app.use("/Revenue",RevenueRouter);
 
+const RevenueSupervisorRouter=require("./routes/RevenueSupervisor");
+app.use("/RevenueSupervisor",RevenueSupervisorRouter);
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

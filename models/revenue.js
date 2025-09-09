@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const revenueSupervisor = require("./revenueSupervisor");
 
 const revenueSchema = new mongoose.Schema({
   revenue_id: {
@@ -18,13 +19,7 @@ const revenueSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  //rsupervisor_id: {
-    //type: String,
-    //type: mongoose.Schema.Types.ObjectId,
-    //required: true,
-    //ref: revenueSupervisor // reference to supervisor collection if exists
-  //}
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model("Revenue", revenueSchema);
-//module.exports = mongoose.model("RevenueSupervisor", revenue_supervisorSchema);
