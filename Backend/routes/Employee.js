@@ -1,7 +1,7 @@
 const router = require("express").Router();
 let Employee = require("../models/employee");
 
-// ------------------- CREATE -------------------
+//CREATE
 router.route("/add").post((req, res) => {
     const employee_id = req.body.employee_id;
     const firstName = req.body.firstName;
@@ -30,7 +30,7 @@ router.route("/add").post((req, res) => {
         });
 });
 
-// ------------------- READ (All) -------------------
+//READ ALL
 router.route("/get").get((req, res) => {
     Employee.find()
         .then((employees) => res.json(employees))
@@ -40,7 +40,7 @@ router.route("/get").get((req, res) => {
         });
 });
 
-// ------------------- UPDATE -------------------
+//UPDATE
 router.route("/update/:id").put(async (req, res) => {
     let empId = req.params.id;
 
@@ -72,7 +72,7 @@ router.route("/update/:id").put(async (req, res) => {
     }
 });
 
-// ------------------- DELETE -------------------
+//DELETE
 router.route("/delete/:id").delete(async (req, res) => {
     let empId = req.params.id;
 
