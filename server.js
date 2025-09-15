@@ -20,3 +20,10 @@ const URL = process.env.MONGODB_URL;  // access the database
 mongoose.connect(URL)
     .then(() => console.log("MongoDB Connection success!"))
     .catch((err) => console.error("MongoDB connection error:", err));
+
+    const AnimalRouter= require("./routes/Animal");
+    app.use("/Animal",AnimalRouter);
+
+    app.listen(PORT, ()=> {
+        console.log(`Server is running on port ${PORT}`);
+    });

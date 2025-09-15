@@ -22,11 +22,7 @@ const animalSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date
     },
-    employee_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee',
-        required: true
-    }
+   
 }, {
     timestamps: true
 });
