@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");    // assigning variables
 
@@ -12,7 +11,8 @@ const PORT = process.env.PORT || 8070;   //if 8070 port is not there assign the 
 
 // middlewares
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());  // parse JSON automatically
+
 
 const URL = process.env.MONGODB_URL;  // access the database
 
@@ -21,7 +21,7 @@ mongoose.connect(URL)
     .then(() => console.log("MongoDB Connection success!"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
-    const AnimalRouter= require("./routes/Employee");
+    const EmployeeRouter= require("./routes/Employee");
     app.use("/Employee",EmployeeRouter);
 
     app.listen(PORT, ()=> {
