@@ -24,6 +24,12 @@ mongoose.connect(URL)
     const AnimalRouter= require("./routes/Animal");
     app.use("/Animal",AnimalRouter);
 
+    const LivestockHandlerRouter = require("./routes/LivestockHandler");
+    app.use("/LivestockHandler", LivestockHandlerRouter);
+
+    const ProductRouter = require("./routes/Product");
+    app.use("/Product", ProductRouter);
+
     app.listen(PORT, ()=> {
         console.log(`Server is running on port ${PORT}`);
     });

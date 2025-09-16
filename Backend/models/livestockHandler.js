@@ -30,4 +30,4 @@ const LivestockHandlerSchema = new mongoose.Schema({
 
 // Export LivestockHandler model
 const Farmer = mongoose.model("LivestockHandler", Schema);
-module.exports = LivestockHandler ;
+module.exports = LivestockHandler;
