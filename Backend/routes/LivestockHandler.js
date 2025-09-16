@@ -98,4 +98,4 @@ router.route("/delete/:id").delete(async (req, res) => {
   }
 });
 
-module.exports = LivestockHandler;
+module.exports = {LivestockHandler};

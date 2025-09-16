@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const LivestockHandlerSchema = new mongoose.Schema({
+const livestockHandlerSchema = new mongoose.Schema({
   handler_id: {
     type: String,
     required: true,
@@ -28,5 +28,5 @@ const LivestockHandlerSchema = new mongoose.Schema({
   }
 }, {timestamps:true});
 
-module.exports = mongoose.model("LivestockHandler", LivestockHandlerSchema);
+module.exports = mongoose.models("LivestockHandler", livestockHandlerSchema);
  
