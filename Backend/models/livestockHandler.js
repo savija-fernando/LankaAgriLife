@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { applyTimestamps } = require("./livestockHandler");
 
 const LivestockHandlerSchema = new mongoose.Schema({
   handler_id: {

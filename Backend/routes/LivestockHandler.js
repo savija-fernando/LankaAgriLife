@@ -3,6 +3,7 @@ const {error} = require("console");
 const LivestockHandler = require("../models/livestockHandler");
 const {Router} = require("express");
 
+
 router.route("/add").post((req, res) => {
   const handler_id = req.body.handler_id;
   const firstName = req.body.firstName;
@@ -50,7 +51,7 @@ router.route("/update/:id").put(async (req, res) => {
   const { handler_id,firstName, lastName,password, email, contact_No  } = req.body;
 
   //build update object
-  const updateEmployee = {
+  const updateLivestockHandler = {
     handler_id,
     firstName,
     lastName,
@@ -90,11 +91,11 @@ router.route("/delete/:id").delete(async (req, res) => {
       return res.status(404).json({ message: "LivestockHandler not found" });
     }
 
-    res.status(200).json({ message: "LivestockHandler deleted successfully", data: deleted });
+    res.status(200).json({ message: "LivestockHandler deleted successfully", data: deletedItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error deleting LivestockHandler", error: error.message });
   }
 });
 
-module.exports = router;
+module.exports = LivestockHandler;
