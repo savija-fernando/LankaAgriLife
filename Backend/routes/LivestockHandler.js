@@ -10,7 +10,7 @@ router.route("/add").post((req, res) => {
   const lastName = req.body.lastName;
   const password = req.body.password;
   const email = req.body.email;
-  const contact_No = req.body.contact_No;
+  const contact_No = Number(req.body.contact_No);
   
 
   const newLivestockHandler = new LivestockHandler({
@@ -98,4 +98,4 @@ router.route("/delete/:id").delete(async (req, res) => {
   }
 });
 
-module.exports = {LivestockHandler};
+module.exports = router;
