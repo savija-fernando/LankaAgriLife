@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { applyTimestamps } = require("./employee");
+const { applyTimestamps } = require("./livestockHandler");
 
 const LivestockHandlerSchema = new mongoose.Schema({
   handler_id: {
@@ -29,5 +29,5 @@ const LivestockHandlerSchema = new mongoose.Schema({
   }
 }, {timestamps:true});
 
-module.exports = mongoose.model("LivestockHandler", LivestockHandlerSchemaivestockHandlerSchema);
+module.exports = mongoose.model("LivestockHandler", LivestockHandlerSchema);
  

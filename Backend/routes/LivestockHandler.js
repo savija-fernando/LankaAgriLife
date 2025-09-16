@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const {error} = require("console");
-const Employee = require("../models/livestockHandler");
+const LivestockHandler = require("../models/livestockHandler");
 const {Router} = require("express");
 
 router.route("/add").post((req, res) => {
