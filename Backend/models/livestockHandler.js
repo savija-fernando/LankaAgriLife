@@ -5,7 +5,7 @@ const LivestockHandlerSchema = new mongoose.Schema({
   handler_id: {
     type: String,
     required: true,
-    unique: true // assuming liceStock_id should be unique
+    unique: true 
   },
   firstName: {
     type: String,
