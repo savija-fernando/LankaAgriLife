@@ -2,28 +2,33 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const dotenv = require("dotenv");    // assigning variables
+const dotenv = require("dotenv");
 
 dotenv.config();
-const app=express();
+const app = express();
 
-const PORT = process.env.PORT || 8070; 
+const PORT = process.env.PORT || 8070;
 
-// middlewares
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
 
-const URL = process.env.MONGODB_URL;  // access the database
+// MongoDB connection
+const URL = process.env.MONGODB_URL;
 
-// mongoose connection 
 mongoose.connect(URL)
-    .then(() => console.log("MongoDB Connection success!"))
-    .catch((err) => console.error("MongoDB connection error:", err));
+  .then(() => console.log("MongoDB connection successful!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
+// Routers
+const PlantRouter = require("./routes/Plant");
+const FarmerRouter = require("./routes/Farmer");
+const HarvestRouter = require("./routes/Harvest");
 
-const PlantRouter=require("./routes/Plant");
-app.use("/Plant",PlantRouter);
+app.use("/Plant", PlantRouter);
+app.use("/Farmer", FarmerRouter);
+app.use("/Harvest", HarvestRouter);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`); 
 });
