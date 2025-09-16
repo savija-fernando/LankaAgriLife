@@ -7,7 +7,7 @@ const harvestSchema = new mongoose.Schema({
     unique: true
   },
   type: {
-    type: String,
+    type: Number,
     required: true
   },
   quantity: {
