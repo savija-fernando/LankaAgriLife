@@ -1,33 +1,40 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-    product_id: {
+    product_id:{
         type: String,
         required: true,
         unique: true
     },
+
     storageDetails: {
+        type: String,
+        required: true
+    },
+
+    type:{
+        type: String,
+        required: true
+    },
+
+    quantity:{
+        type: Number,
+        required: true
+    },
+
+    CollectionDate:{
+        type: Date,
+        required: true
+    },
+
+    processedStatus:{
+        type: String,
+        required: true
+    },
+    note:{
         type: String
-    },
-    type: {
-        type: String
-    },
-    note: {
-        type: String
-    },
-    collectionDate: {
-        type: Date
-    },
-    quantity: {
-        type: Number
-    },
-    processedStatus: {
-        type: String, // can be "processed", "pending", etc.
-        enum: ["processed", "pending", "rejected"], // optional restriction
-        default: "pending"
     }
-}, {
-    timestamps: true
-});
+
+}, {timestamps:true});
 
 module.exports = mongoose.model("Product", productSchema);

@@ -1,82 +1,99 @@
 const router = require("express").Router();
+const {error} = require("console");
 const Employee = require("../models/livestockHandler");
+const {Router} = require("express");
 
-// ================================
-// Add new employee
-// ================================
 router.route("/add").post((req, res) => {
-  console.log("Request body:", req.body); // Debug
+  const handler_id = req.body.handler_id;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const password = req.body.password;
+  const email = req.body.email;
+  const contact_No = req.body.contact_No;
+  
 
-  const { handler_id, firstName, lastName,loginCredentials, email, contact_No} = req.body;
-
-  const newLivestockHandler = new Employee({
+  const newLivestockHandler = new LivestockHandler({
     handler_id,
     firstName,
     lastName,
-    loginCredentials,
+    password,
     email,
     contact_No
-      });
+  });
 
-  newLivestockHandler.save()
-    .then(() => res.json("New LivestockHandler added successfully!"))
+  newLivestockHandler.save().then(() => {
+    res.json("New LivestockHandler added successfully!");
+  })
     .catch((error) => {
-      console.error(error);
-      res.status(500).json("Error: " + error.message);
+      console.log(error);
+      res.status(500).json("Error: " + error);
     });
 });
 
-// ================================
-// Get all employees
-// ================================
+//http://localhost:8070/LivestockHandler
+//get all data
+
 router.route("/").get((req, res) => {
-  LivestockHandler.find()
-    .then((livestockHandler) => res.json(livestockHandler))
-    .catch((error) => res.status(500).json("Error: " + error.message));
+  LivestockHandler.find().then((livestockHandler) => {
+    res.json(livestockHandler)
+  }).catch((error) => {
+    console.log(error)
+  })
 });
 
-// ================================
-// Update employee by employee_id
-// ================================
-router.route("/update/:handler_id").put(async (req, res) => {
-  const handler_id = req.params.handler_id;
-  const { firstName, lastName, email, contact, password } = req.body;
+//http://localhost:8070/LivestockHandler/update/
+router.route("/update/:id").put(async (req, res) => {
+  //extract LivestockHandler id from url
+  let livestockHandlerID = req.params.id;
 
+  //destructure request
+  const { handler_id,firstName, lastName,password, email, contact_No  } = req.body;
+
+  //build update object
+  const updateEmployee = {
+    handler_id,
+    firstName,
+    lastName,
+    password,
+    email,
+    contact_No
+    
+
+  }
   try {
     const updated = await LivestockHandler.findOneAndUpdate(
-      { handler_id },
-      { firstName, lastName, email, contact, password },
+      { handler_id: livestockHandlerID },
+      updateLivestockHandler,
       { new: true }
     );
 
     if (!updated) {
       return res.status(404).json({ message: "LivestockHandler not found" });
     }
-
+    else
     res.status(200).json({ message: "LivestockHandler updated successfully", data: updated });
+
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({ message: "Error updating LivestockHandler", error: error.message });
   }
 });
 
-// ================================
-// Delete employee by employee_id
-// ================================
-router.route("/delete/:handler_id").delete(async (req, res) => {
-  const handler_id = req.params.handler_id;
+
+router.route("/delete/:id").delete(async (req, res) => {
+  const livestockHandlerID = req.params.id;
 
   try {
-    const deleted = await LivestockHandler.findOneAndDelete({ handler_id });
+    const deletedItem = await LivestockHandler.findOneAndDelete({ handler_id: livestockHandlerID });
 
-    if (!deleted) {
-      return res.status(404).json({ message: "Employee not found" });
+    if (!deletedItem) {
+      return res.status(404).json({ message: "LivestockHandler not found" });
     }
 
-    res.status(200).json({ message: "Employee deleted successfully", data: deleted });
+    res.status(200).json({ message: "LivestockHandler deleted successfully", data: deleted });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error deleting Employee", error: error.message });
+    res.status(500).json({ message: "Error deleting LivestockHandler", error: error.message });
   }
 });
 

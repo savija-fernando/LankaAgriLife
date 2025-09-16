@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { applyTimestamps } = require("./employee");
 
 const LivestockHandlerSchema = new mongoose.Schema({
   handler_id: {
@@ -14,7 +15,7 @@ const LivestockHandlerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  loginCredentials: {
+  password: {
     type: String,
     required: true
   },
@@ -26,8 +27,7 @@ const LivestockHandlerSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-});
+}, {timestamps:true});
 
-// Export LivestockHandler model
-const Farmer = mongoose.model("LivestockHandler", Schema);
-module.exports = LivestockHandler;
+module.exports = mongoose.model("LivestockHandler", LivestockHandlerSchemaivestockHandlerSchema);
+ 
