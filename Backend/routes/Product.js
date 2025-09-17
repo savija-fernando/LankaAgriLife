@@ -12,7 +12,7 @@ router.route("/add").post((req, res) => {
   const processedStatus = req.body.processedStatus;
   const note= req.body.note;
 
-  const newEmployee = new Employee({
+  const newProduct = new Product({
     product_id,
     storageDetails,
     type,
@@ -51,7 +51,7 @@ router.route("/update/:id").put(async (req, res) => {
   const { product_id,storageDetails, type, quantity, CollectionDate, processedStatus, note } = req.body;
 
   //build update object
-  const updateEmployee = {
+  const updateProduct = {
     product_id,
     storageDetails,
     type,
