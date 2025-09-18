@@ -26,8 +26,9 @@ const livestockHandlerSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-}, {timestamps:true});
+});
 
-module.exports = mongoose.models.LivestockHandler || mongoose.model("LivestockHandler", livestockHandlerSchema);
+const Livestock = mongoose.model("Livestock", livestockHandlerSchema);
 
+module.exports = Livestock;
  

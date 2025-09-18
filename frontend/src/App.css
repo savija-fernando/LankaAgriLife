@@ -1,0 +1,33 @@
+/* App.css */
+
+/* Tailwind base, components, utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: custom global styles */
+body {
+  @apply bg-gray-50 text-gray-800 font-sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+}
+
+button {
+  @apply transition duration-200 ease-in-out;
+}
+
+button:hover {
+  @apply cursor-pointer;
+}
+
+/* Card shadow and rounded corner consistency */
+.card {
+  @apply bg-white rounded-lg shadow p-4;
+}
+
+/* Grid spacing for main container */
+.main-grid {
+  @apply grid gap-4 grid-cols-1 md:grid-cols-2;
+}

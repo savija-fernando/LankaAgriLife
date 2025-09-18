@@ -1,42 +1,32 @@
 const mongoose = require("mongoose");
 
-const LivestockHandlerSchema = new mongoose.Schema({
-  handler_id: {
+const animalSchema = new mongoose.Schema({
+  animal_id: {
     type: String,
     required: true,
     unique: true
   },
-  firstName: {
+  species: {
     type: String,
     required: true
   },
-  lastName: {
+  breedingDetails: {
     type: String,
     required: true
   },
-  loginCredentials: {
-    username: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    password: {
-      type: String,
-      required: true
-    }
+  feedingData: {
+    type: Date
   },
-  email: {
+  healthRecord: {
     type: String,
     required: true,
     unique: true
   },
-  contact_No: {
-    type: String,
-    required: true
+  dateOfBirth: {
+    type: Date
   }
-}, {
-  timestamps: true
 });
 
-// Export model
-module.exports = mongoose.model("LivestockHandler", LivestockHandlerSchema);
+const Animal = mongoose.model("Animal", animalSchema);
+
+module.exports = Animal;
