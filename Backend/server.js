@@ -2,28 +2,25 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const dotenv = require("dotenv");    // assigning variables
+const dotenv = require("dotenv");
 
-dotenv.config();  // load .env file
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 8070;
 
-const PORT = process.env.PORT || 8070;   //if 8070 port is not there assign the available port number(process.env.PORT)
-
-// middlewares
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
 
-const URL = process.env.MONGODB_URL;  // access the database
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => console.log("MongoDB Connected!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// mongoose connection 
-mongoose.connect(URL)
-    .then(() => console.log("MongoDB Connection success!"))
-    .catch((err) => console.error("MongoDB connection error:", err));
+// Routes
+const WasteRouter = require("./routes/waste");
+app.use("/waste", WasteRouter);
 
-const CompostRouter=require("./routes/compost");
-app.use("/compost",CompostRouter);
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Start server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
