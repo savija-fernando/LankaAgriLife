@@ -10,11 +10,13 @@
   "author": "Savija Senelie Gayani Kaveesha and Rakith",
   "license": "ISC",
   "dependencies": {
+    "algoliasearch": "^5.37.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "mongoose": "^8.18.0",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "twilio": "^5.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

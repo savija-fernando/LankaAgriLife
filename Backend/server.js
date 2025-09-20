@@ -2,28 +2,48 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const dotenv = require("dotenv");    // assigning variables
+const dotenv = require("dotenv");    // for loading environment variables
+const twilio = require("twilio");
 
 dotenv.config();  // load .env file
 
 const app = express();
-
-const PORT = process.env.PORT || 8070;   //if 8070 port is not there assign the available port number(process.env.PORT)
+const PORT = process.env.PORT || 8070;
 
 // middlewares
 app.use(cors());
 app.use(bodyParser.json());
 
-const URL = process.env.MONGODB_URL;  // access the database
-
-// mongoose connection 
+// MongoDB connection
+const URL = process.env.MONGODB_URL;
 mongoose.connect(URL)
     .then(() => console.log("MongoDB Connection success!"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
+// Twilio client
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-const InventoryRouter=require("./routes/Inventory");
-app.use("/Inventory",InventoryRouter);
+// WhatsApp route
+app.post("/send-message", async (req, res) => {
+    const { name, email, message } = req.body;
+
+    try {
+        const msg = await client.messages.create({
+            from: process.env.TWILIO_WHATSAPP_NUMBER,  // e.g., whatsapp:+14155238886
+            to: process.env.YOUR_WHATSAPP_NUMBER,      // your WhatsApp number
+            body: `New Contact Form Submission:\nName: ${name}\nEmail: ${email}\nMessage: ${message}`
+        });
+
+        res.status(200).json({ success: true, sid: msg.sid });
+    } catch (error) {
+        console.error("Twilio Error:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Existing Inventory route
+const InventoryRouter = require("./routes/Inventory");
+app.use("/Inventory", InventoryRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
