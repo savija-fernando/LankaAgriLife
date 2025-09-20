@@ -29,8 +29,8 @@ app.post("/send-message", async (req, res) => {
 
     try {
         const msg = await client.messages.create({
-            from: process.env.TWILIO_WHATSAPP_NUMBER,  // e.g., whatsapp:+14155238886
-            to: process.env.YOUR_WHATSAPP_NUMBER,      // your WhatsApp number
+            from: process.env.TWILIO_WHATSAPP_NUMBER,  
+            to: process.env.YOUR_WHATSAPP_NUMBER,      // my WhatsApp number
             body: `New Contact Form Submission:\nName: ${name}\nEmail: ${email}\nMessage: ${message}`
         });
 
@@ -41,9 +41,13 @@ app.post("/send-message", async (req, res) => {
     }
 });
 
-// Existing Inventory route
+//Inventory route
 const InventoryRouter = require("./routes/Inventory");
 app.use("/Inventory", InventoryRouter);
+
+//AdminDetails route
+const AdminDetailsRouter = require("./routes/AdminDetails");
+app.use("/AdminDetails", AdminDetailsRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
