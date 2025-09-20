@@ -28,6 +28,28 @@ const addAdminDetails = async (req, res) => {
   }
 };
 
+// Login admin
+const loginAdmin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const admin = await AdminDetails.findOne({ email });
+
+    if (!admin) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    if (admin.passwordHash !== password) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    res.status(200).json({ message: "Login successful", admin });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Login failed", error: error.message });
+  }
+};
+
 // Get all admin details
 const getAllAdminDetails = async (req, res) => {
   try {
@@ -84,9 +106,11 @@ const deleteAdmin = async (req, res) => {
   }
 };
 
+// Export all functions
 module.exports = {
   addAdminDetails,
   getAllAdminDetails,
   updateAdminDetails,
   deleteAdmin,
+  loginAdmin, 
 };

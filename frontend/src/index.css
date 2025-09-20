@@ -2,20 +2,19 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap');
 
-/* You can add your own custom styles below if needed */
+/* Apply Tailwind utilities + custom font */
 body {
-  @apply bg-green-50 text-gray-800;
+  @apply bg-gray-50 text-gray-800; /* updated body bg */
   font-family: 'Inter', sans-serif;
-
 }
 
 h1, h2, h3, h4 {
   @apply font-bold text-green-900;
 }
+
 h4 {
   @apply text-lg text-white;
 }
-
 
 a {
   @apply text-green-700 hover:text-green-900;

@@ -5,6 +5,7 @@ const {
   getAllAdminDetails,
   updateAdminDetails,
   deleteAdmin,
+  loginAdmin,
 } = require("../controllers/adminDetailsController");
 
 // POST /Admin/add
@@ -18,5 +19,9 @@ router.put("/update/:id", updateAdminDetails);
 
 // DELETE /Admin/delete/:id
 router.delete("/delete/:id", deleteAdmin);
+
+// POST /Admin/login
+router.post("/login", loginAdmin);
+
 
 module.exports = router;
