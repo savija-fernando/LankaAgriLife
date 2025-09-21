@@ -69,6 +69,10 @@ app.use("/Product", ProductRouter);
 const CompostRouter = require("./routes/compost");
 app.use("/Compost", CompostRouter);
 
+//CompostHandler route
+const CompostHandlerRouter = require("./routes/compostHandler");
+app.use("/CompostHandler", CompostHandlerRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
