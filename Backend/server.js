@@ -57,6 +57,10 @@ app.use("/Revenue",RevenueRouter);
 const AnimalRouter = require("./routes/Animal");
 app.use("/Animal", AnimalRouter);
 
+//Livestock route
+const LivestockRouter = require("./routes/LivestockHandler");
+app.use("/LivestockHandler", LivestockRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

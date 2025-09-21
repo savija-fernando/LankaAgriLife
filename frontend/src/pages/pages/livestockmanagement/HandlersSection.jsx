@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../../components/components/ui/Card';
 import { Input } from '../../../components/components/ui/Input';
-import { Edit, Trash, PlusCircle } from 'lucide-react'; // Added Trash for Delete
+import { Edit, Trash, PlusCircle } from 'lucide-react';
 import { Button } from '../../../components/components/ui/Button';
 import { FaUserTie } from "react-icons/fa";
+import {
+  getAllLivestock,
+  addLivestock,
+  updateLivestockItem,
+  deleteLivestockItem
+} from '../../../api/livestockAPI';
 
-const HandlersSection = ({ handlers, setHandlers }) => {
+const HandlersSection = () => {
+  const [handlers, setHandlers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(null);
   const [currentHandler, setCurrentHandler] = useState({
@@ -17,25 +24,43 @@ const HandlersSection = ({ handlers, setHandlers }) => {
     contact_No: '',
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentHandler((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  useEffect(() => {
+    fetchHandlers();
+  }, []);
+
+  const fetchHandlers = async () => {
+    try {
+      const res = await getAllLivestock();
+      setHandlers(res.data);
+    } catch (err) {
+      console.error('Error fetching handlers:', err);
+      alert('Failed to load handlers.');
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentHandler((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!currentHandler.firstName || !currentHandler.lastName || !currentHandler.email) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  try {
     if (editMode) {
-      setHandlers(
-        handlers.map((h) =>
-          h.handler_id === editMode ? { ...h, ...currentHandler } : h
-        )
-      );
+      await updateLivestockItem(editMode, currentHandler);
+      alert('Handler updated successfully');
     } else {
-      setHandlers([...handlers, { ...currentHandler, handler_id: handlers.length + 1 }]);
+      const newHandler = { ...currentHandler, handler_id: Date.now().toString() };
+      await addLivestock(newHandler);
+      alert('Handler added successfully');
     }
+
     setIsModalOpen(false);
     setEditMode(null);
     setCurrentHandler({
@@ -46,7 +71,14 @@ const HandlersSection = ({ handlers, setHandlers }) => {
       email: '',
       contact_No: '',
     });
-  };
+
+    fetchHandlers();
+  } catch (err) {
+    console.error('Save error:', err);
+    alert('Failed to save handler.');
+  }
+};
+
 
   const handleEdit = (id) => {
     const handler = handlers.find((h) => h.handler_id === id);
@@ -55,8 +87,16 @@ const HandlersSection = ({ handlers, setHandlers }) => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setHandlers(handlers.filter((h) => h.handler_id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this handler?')) return;
+    try {
+      await deleteLivestockItem(id);
+      alert('Handler deleted successfully');
+      fetchHandlers();
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Failed to delete handler.');
+    }
   };
 
   return (
@@ -67,11 +107,14 @@ const HandlersSection = ({ handlers, setHandlers }) => {
           <FaUserTie className="w-8 h-8 text-green-600" /> Handlers
         </h2>
         <Button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setIsModalOpen(true);
+            setEditMode(null);
+            setCurrentHandler({ handler_id:'', firstName:'', lastName:'', password:'', email:'', contact_No:'' });
+          }}
           className="flex items-center gap-2 bg-green-700 text-white hover:bg-green-600 rounded-full px-4 py-2"
         >
-          <PlusCircle className="w-5 h-5" />
-          Add Handler
+          <PlusCircle className="w-5 h-5" /> Add Handler
         </Button>
       </div>
 
@@ -81,10 +124,10 @@ const HandlersSection = ({ handlers, setHandlers }) => {
           <Card key={handler.handler_id} className="relative bg-white shadow-lg rounded-lg p-6 hover:scale-105 transition">
             {/* Edit and Delete Buttons */}
             <div className="absolute top-4 right-4 flex gap-2">
-              <button onClick={() => handleEdit(handler.handler_id)} className="text-green-600 hover:text-gray-800">
+              <button onClick={() => handleEdit(handler.handler_id)} className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500">
                 <Edit className="w-5 h-5" />
               </button>
-              <button onClick={() => handleDelete(handler.handler_id)} className="text-green-600 hover:text-gray-800">
+              <button onClick={() => handleDelete(handler.handler_id)} className="bg-red-600 text-white p-1 rounded hover:bg-red-700">
                 <Trash className="w-5 h-5" />
               </button>
             </div>
@@ -100,15 +143,8 @@ const HandlersSection = ({ handlers, setHandlers }) => {
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-20">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 text-gray-500 text-2xl"
-            >
-              &times;
-            </button>
-            <h2 className="text-xl font-semibold mb-4 text-green-700">
-              {editMode ? 'Edit Handler' : 'Add New Handler'}
-            </h2>
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-2 right-2 text-gray-500 text-2xl">&times;</button>
+            <h2 className="text-xl font-semibold mb-4 text-green-700">{editMode ? 'Edit Handler' : 'Add New Handler'}</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
               <Input name="firstName" placeholder="First Name" value={currentHandler.firstName} onChange={handleInputChange} />
               <Input name="lastName" placeholder="Last Name" value={currentHandler.lastName} onChange={handleInputChange} />
