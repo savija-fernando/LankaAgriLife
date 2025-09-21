@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../../components/components/ui/Card';
 import { Input } from '../../../components/components/ui/Input';
-import { Edit, Trash, PlusCircle } from 'lucide-react'; // Added Trash for Delete
+import { Edit, Trash, PlusCircle } from 'lucide-react';
 import { Button } from '../../../components/components/ui/Button';
 import { GiMilkCarton } from "react-icons/gi";
+import {
+  getAllProduct,
+  addProduct,
+  updateProduct,
+  deleteProductItem
+} from '../../../api/productAPI';
 
-const ProductsSection = ({ products, setProducts }) => {
+const ProductsSection = () => {
+  const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(null);
   const [currentProduct, setCurrentProduct] = useState({
@@ -17,46 +24,79 @@ const ProductsSection = ({ products, setProducts }) => {
     processedStatus: '',
   });
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await getAllProduct();
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      alert("Failed to load products.");
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentProduct((prev) => ({
+    setCurrentProduct(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editMode) {
-      setProducts(
-        products.map((p) =>
-          p.product_id === editMode ? { ...p, ...currentProduct } : p
-        )
-      );
-    } else {
-      setProducts([...products, { ...currentProduct, product_id: products.length + 1 }]);
+    try {
+      if (editMode) {
+        await updateProduct(editMode, currentProduct);
+        alert('Product updated successfully');
+      } else {
+        await addProduct(currentProduct);
+        alert('Product added successfully');
+      }
+
+      setIsModalOpen(false);
+      setEditMode(null);
+      setCurrentProduct({
+        product_id: '',
+        storageDetails: '',
+        type: '',
+        quantity: '',
+        CollectionDate: '',
+        processedStatus: '',
+      });
+      fetchProducts();
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("Failed to save product.");
     }
-    setIsModalOpen(false);
-    setEditMode(null);
-    setCurrentProduct({
-      product_id: '',
-      storageDetails: '',
-      type: '',
-      quantity: '',
-      CollectionDate: '',
-      processedStatus: '',
-    });
   };
 
   const handleEdit = (id) => {
-    const product = products.find((p) => p.product_id === id);
-    setCurrentProduct(product);
+    const product = products.find(p => p.product_id === id);
+    if (!product) return;
+
+    setCurrentProduct({
+      ...product,
+      CollectionDate: product.CollectionDate ? product.CollectionDate.slice(0, 10) : '',
+      quantity: product.quantity || '',
+    });
     setEditMode(id);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.product_id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this product?")) return;
+    try {
+      await deleteProductItem(id);
+      alert("Product deleted successfully");
+      fetchProducts();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete product.");
+    }
   };
 
   return (
@@ -67,31 +107,42 @@ const ProductsSection = ({ products, setProducts }) => {
           <GiMilkCarton className="w-8 h-8 text-green-600" /> Products
         </h2>
         <Button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-green-700 text-white hover:bg-green-600 rounded-full px-4 py-2"
+          onClick={() => {
+            setCurrentProduct({
+              product_id: '',
+              storageDetails: '',
+              type: '',
+              quantity: '',
+              CollectionDate: '',
+              processedStatus: '',
+            });
+            setEditMode(null);
+            setIsModalOpen(true);
+          }}
+          className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-500 rounded-full px-4 py-2"
         >
-          <PlusCircle className="w-5 h-5" />
-          Add Product
+          <PlusCircle className="w-5 h-5" /> Add Product
         </Button>
       </div>
 
       {/* Product Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
+        {products.map(product => (
           <Card key={product.product_id} className="relative bg-white shadow-lg rounded-lg p-6 hover:scale-105 transition">
             {/* Edit and Delete Buttons */}
             <div className="absolute top-4 right-4 flex gap-2">
-              <button onClick={() => handleEdit(product.product_id)} className="text-green-600 hover:text-gray-800">
+              <button onClick={() => handleEdit(product.product_id)} className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500">
                 <Edit className="w-5 h-5" />
               </button>
-              <button onClick={() => handleDelete(product.product_id)} className="text-green-600 hover:text-gray-800">
+              <button onClick={() => handleDelete(product.product_id)} className="bg-red-600 text-white p-1 rounded hover:bg-red-700">
                 <Trash className="w-5 h-5" />
               </button>
             </div>
             <h3 className="text-xl font-semibold">{product.type}</h3>
+            <p><strong>Product ID:</strong> {product.product_id}</p>
             <p><strong>Storage:</strong> {product.storageDetails}</p>
             <p><strong>Quantity:</strong> {product.quantity}</p>
-            <p><strong>Collection Date:</strong> {product.CollectionDate}</p>
+            <p><strong>Collection Date:</strong> {product.CollectionDate ? new Date(product.CollectionDate).toLocaleDateString() : 'N/A'}</p>
             <p><strong>Status:</strong> {product.processedStatus}</p>
           </Card>
         ))}
@@ -111,14 +162,50 @@ const ProductsSection = ({ products, setProducts }) => {
               {editMode ? 'Edit Product' : 'Add New Product'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-3">
-              <Input name="type" placeholder="Type" value={currentProduct.type} onChange={handleInputChange} />
-              <Input name="storageDetails" placeholder="Storage Details" value={currentProduct.storageDetails} onChange={handleInputChange} />
-              <Input name="quantity" placeholder="Quantity" value={currentProduct.quantity} onChange={handleInputChange} />
-              <Input name="CollectionDate" placeholder="Collection Date" value={currentProduct.CollectionDate} onChange={handleInputChange} />
-              <Input name="processedStatus" placeholder="Processed Status" value={currentProduct.processedStatus} onChange={handleInputChange} />
+              {!editMode && (
+                <Input
+                  name="product_id"
+                  placeholder="Product ID"
+                  value={currentProduct.product_id}
+                  onChange={handleInputChange}
+                />
+              )}
+              <Input
+                name="type"
+                placeholder="Type"
+                value={currentProduct.type}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="storageDetails"
+                placeholder="Storage Details"
+                value={currentProduct.storageDetails}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="quantity"
+                placeholder="Quantity"
+                value={currentProduct.quantity}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="CollectionDate"
+                type="date"
+                placeholder="Collection Date"
+                value={currentProduct.CollectionDate}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="processedStatus"
+                placeholder="Processed Status"
+                value={currentProduct.processedStatus}
+                onChange={handleInputChange}
+              />
               <div className="flex justify-end gap-2">
                 <Button onClick={() => setIsModalOpen(false)} className="bg-red-600">Cancel</Button>
-                <Button type="submit" className="bg-green-700">{editMode ? 'Update' : 'Add'}</Button>
+                <Button type="submit" className="bg-blue-600">
+                  {editMode ? 'Update' : 'Add'}
+                </Button>
               </div>
             </form>
           </div>
