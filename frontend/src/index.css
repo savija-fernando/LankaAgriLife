@@ -3,23 +3,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap');
 
 /* Apply Tailwind utilities + custom font */
-body {
-  @apply bg-gray-50 text-gray-800; /* updated body bg */
-  font-family: 'Inter', sans-serif;
-}
 
-h1, h2, h3, h4 {
-  @apply font-bold text-green-900;
-}
-
-h4 {
-  @apply text-lg text-white;
-}
-
-a {
-  @apply text-green-700 hover:text-green-900;
-}
-
-button {
-  @apply bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition;
-}

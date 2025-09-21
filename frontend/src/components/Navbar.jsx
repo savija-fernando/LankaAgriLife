@@ -34,11 +34,7 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) =>
-                  `relative font-medium transition-colors after:block after:h-[2px] after:w-0 after:bg-green-400 after:transition-all after:duration-300 hover:after:w-full ${
-                    isActive
-                      ? "text-green-400"
-                      : "text-gray-100 hover:text-green-400"
-                  }`
+                  `relative font-medium text-green-800 transition-colors after:block after:h-[2px] after:w-0 after:bg-green-800 after:transition-all after:duration-300 hover:after:w-full`
                 }
               >
                 {link.name}
@@ -48,7 +44,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-gray-100 hover:text-green-400"
+            className="md:hidden p-2 text-green-800 hover:text-green-700"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -67,13 +63,7 @@ const Navbar = () => {
             <NavLink
               key={link.name}
               to={link.path}
-              className={({ isActive }) =>
-                `font-medium transition-colors ${
-                  isActive
-                    ? "text-green-400"
-                    : "text-gray-100 hover:text-green-400"
-                }`
-              }
+              className="font-medium text-green-800 hover:text-green-700"
               onClick={() => setIsOpen(false)}
             >
               {link.name}
