@@ -3,7 +3,7 @@ import { Card } from '../../../components/components/ui/Card';
 import { Input } from '../../../components/components/ui/Input';
 import { Edit, Trash, PlusCircle } from 'lucide-react'; // Added Trash for Delete
 import { Button } from '../../../components/components/ui/Button';
-//import { GiCow } from "react-icons/gi";
+import { GiCow } from "react-icons/gi";
 
 const AnimalsSection = ({ animals, setAnimals }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

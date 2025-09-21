@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Button } from '../../../components/components/ui/Button';
 import { Card } from '../../../components/components/ui/Card';
 import { Search } from 'lucide-react';
-//import { MdOutlinePeopleAlt } from "react-icons/md"; 
+import { MdOutlinePeopleAlt } from "react-icons/md"; 
 import CompostSection from './CompostSection';
 import CompostHandlerSection from './CompostHandlerSection';
 import WasteSection from './WasteSection';
-//import { MdCompost } from "react-icons/md";
-//import { GiPlantWatering } from "react-icons/gi";
+import { MdCompost } from "react-icons/md";
+import { GiPlantWatering } from "react-icons/gi";
 
 const CompostManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');

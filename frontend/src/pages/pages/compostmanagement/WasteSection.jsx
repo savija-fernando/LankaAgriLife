@@ -3,7 +3,7 @@ import { Card } from '../../../components/components/ui/Card';
 import { Button } from '../../../components/components/ui/Button';
 import { Input } from '../../../components/components/ui/Input';
 import { Edit, Trash, PlusCircle } from 'lucide-react';
-//import { MdCompost } from "react-icons/md";
+import { MdCompost } from "react-icons/md";
 
 const WasteSection = ({ wastes, setWastes }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -49,6 +49,11 @@ app.use("/Inventory", InventoryRouter);
 const AdminDetailsRouter = require("./routes/AdminDetails");
 app.use("/AdminDetails", AdminDetailsRouter);
 
+//Revenue route
+const RevenueRouter=require("./routes/Revenue");
+app.use("/Revenue",RevenueRouter);
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

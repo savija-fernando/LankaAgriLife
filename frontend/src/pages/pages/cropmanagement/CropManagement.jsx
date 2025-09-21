@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Button } from '../../../components/components/ui/Button';
 import { Card } from '../../../components/components/ui/Card';
-//import { FaSeedling } from "react-icons/fa"; // For Plant Icon
+import { FaSeedling } from "react-icons/fa"; // For Plant Icon
 import { Calendar } from 'lucide-react'; // For Calendar Icon
 import { Search } from 'lucide-react';
 import { TabToggleBar } from '../../../components/components/ui/TabToggleBar'; // Correct way to import named export
 import FarmersSection from './FarmersSection';  // Import FarmersSection
 import PlantsSection from './PlantsSection';  // Import PlantsSection
 import HarvestSection from './HarvestSection'; // Import HarvestSection
-//import { GiFarmer } from "react-icons/gi";
+import { GiFarmer } from "react-icons/gi";
 
 const CropManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');

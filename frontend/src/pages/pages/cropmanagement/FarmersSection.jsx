@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Card } from '../../../components/components/ui/Card';
 import { Input } from '../../../components/components/ui/Input';
 import { Mail, Phone, MapPin, User, Edit, Trash, PlusCircle } from 'lucide-react'; // Edit, Delete and PlusCircle icons
-//import { FaSeedling } from 'react-icons/fa'; // Seedling Icon from React Icons
+import { FaSeedling } from 'react-icons/fa'; // Seedling Icon from React Icons
 import { Button } from '../../../components/components/ui/Button';
-//import { GiFarmTractor } from "react-icons/gi";
+import { GiFarmTractor } from "react-icons/gi";
 
 const FarmersSection = ({ farmers, setFarmers }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for Add/Edit Farmer Modal

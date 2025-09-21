@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-//import { FaHorse } from 'react-icons/fa';
-//import { GiFarmer, GiMilkCarton } from 'react-icons/gi';
+import { FaHorse } from 'react-icons/fa';
+import { GiFarmer, GiMilkCarton } from 'react-icons/gi';
 import { Calendar } from 'lucide-react';
 import { Search } from 'lucide-react';
 import { Button } from '../../../components/components/ui/Button';

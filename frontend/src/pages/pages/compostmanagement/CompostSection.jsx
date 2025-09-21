@@ -3,7 +3,7 @@ import { Card } from '../../../components/components/ui/Card';
 import { Button } from '../../../components/components/ui/Button';
 import { Input } from '../../../components/components/ui/Input';
 import { Edit, PlusCircle } from 'lucide-react';
-//import { GiFertilizerBag } from "react-icons/gi";
+import { GiFertilizerBag } from "react-icons/gi";
 
 
 const CompostSection = ({ composts, setComposts }) => {

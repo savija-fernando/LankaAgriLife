@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Card } from '../../../components/components/ui/Card';
-//import { FaSeedling } from 'react-icons/fa'; // Seedling Icon
+import { FaSeedling } from 'react-icons/fa'; // Seedling Icon
 import { Edit, Trash, PlusCircle } from 'lucide-react'; // Edit, Delete and PlusCircle icons
 import { Input } from '../../../components/components/ui/Input';
 import { Button } from '../../../components/components/ui/Button';
-//import { GiWheat } from "react-icons/gi";
+import { GiWheat } from "react-icons/gi";
 
 const PlantsSection = ({ plants, setPlants }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for Add/Edit Plant Modal
