@@ -81,6 +81,10 @@ app.use("/waste", WasteRouter);
 const FarmerRouter = require("./routes/Farmer");
 app.use("/Farmer", FarmerRouter);
 
+//Plant route
+const PlantRouter = require("./routes/Plant");
+app.use("/Plant", PlantRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
