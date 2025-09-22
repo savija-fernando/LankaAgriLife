@@ -1,81 +1,134 @@
-import React, { useState } from 'react';
-import { Card } from '../../../components/components/ui/Card';
-import { Input } from '../../../components/components/ui/Input';
-import { Edit, Trash, PlusCircle } from 'lucide-react'; // Edit, Delete and Plus icons
-import { Button } from '../../../components/components/ui/Button';
+import React, { useState, useEffect } from "react";
+import { Card } from "../../../components/components/ui/Card";
+import { Input } from "../../../components/components/ui/Input";
+import { Edit, Trash, PlusCircle } from "lucide-react"; // Icons
+import { Button } from "../../../components/components/ui/Button";
+import {
+  getAllHarvests,
+  addHarvest,
+  updateHarvest,
+  deleteHarvest,
+} from "../../../api/harvestAPI"; // Assume your axios helpers are here
 
-const HarvestSection = ({ harvests, setHarvests }) => {
+const HarvestSection = () => {
+  const [harvests, setHarvests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editMode, setEditMode] = useState(null); // To track the harvest being edited
+  const [editMode, setEditMode] = useState(null); // harvest_id being edited
   const [currentHarvest, setCurrentHarvest] = useState({
-    harvest_id: '',
-    type: '',
-    quantity: '',
-    harvestDate: '',
-    note: '',
+    harvest_id: "",
+    type: "",
+    quantity: "",
+    harvestDate: "",
+    note: "",
   });
 
-  // Handle input changes in Add/Edit Harvest modal
+  // Fetch harvests on mount
+  useEffect(() => {
+    fetchHarvests();
+  }, []);
+
+  const fetchHarvests = async () => {
+    try {
+      const res = await getAllHarvests();
+      setHarvests(res.data);
+    } catch (error) {
+      console.error("Failed to fetch harvests:", error);
+    }
+  };
+
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentHarvest((prevState) => ({
-      ...prevState,
+    setCurrentHarvest((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  // Handle adding or editing a harvest
-  const handleAddOrEditHarvestSubmit = (e) => {
+  // Open add modal
+  const openAddModal = () => {
+    setCurrentHarvest({
+      harvest_id: "",
+      type: "",
+      quantity: "",
+      harvestDate: "",
+      note: "",
+    });
+    setEditMode(null);
+    setIsModalOpen(true);
+  };
+
+  // Open edit modal
+  const handleEditHarvest = (id) => {
+    const harvest = harvests.find((h) => h.harvest_id === id);
+    if (harvest) {
+      setCurrentHarvest({
+        ...harvest,
+        harvestDate: new Date(harvest.harvestDate)
+          .toISOString()
+          .slice(0, 10), // Format date for input[type=date]
+      });
+      setEditMode(id);
+      setIsModalOpen(true);
+    }
+  };
+
+  // Handle delete
+  const handleDeleteHarvest = async (id) => {
+    if (window.confirm("Are you sure you want to delete this harvest?")) {
+      try {
+        await deleteHarvest(id);
+        setHarvests(harvests.filter((h) => h.harvest_id !== id));
+        alert("Harvest deleted successfully!");
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("Failed to delete harvest.");
+      }
+    }
+  };
+
+  // Handle add or update submit
+  const handleAddOrEditHarvestSubmit = async (e) => {
     e.preventDefault();
 
-    if (editMode) {
-      // Edit mode: Update existing harvest data
-      const updatedHarvests = harvests.map((harvest) =>
-        harvest.harvest_id === editMode ? { ...harvest, ...currentHarvest } : harvest
-      );
-      setHarvests(updatedHarvests);
-    } else {
-      // Add mode: Add a new harvest
-      setHarvests([
-        ...harvests,
-        { ...currentHarvest, harvest_id: harvests.length + 1 },
-      ]);
+    try {
+      if (editMode) {
+        // Update
+        await updateHarvest(editMode, currentHarvest);
+        alert("Harvest updated successfully!");
+      } else {
+        // Add
+        await addHarvest(currentHarvest);
+        alert("Harvest added successfully!");
+      }
+      fetchHarvests();
+      setIsModalOpen(false);
+      setEditMode(null);
+      setCurrentHarvest({
+        harvest_id: "",
+        type: "",
+        quantity: "",
+        harvestDate: "",
+        note: "",
+      });
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Error saving harvest, please try again.");
     }
-
-    setIsModalOpen(false); // Close the modal after submitting
-    setEditMode(null); // Reset edit mode
-    setCurrentHarvest({
-      harvest_id: '',
-      type: '',
-      quantity: '',
-      harvestDate: '',
-      note: '',
-    });
-  };
-
-  // Open the modal for editing a harvest
-  const handleEditHarvest = (id) => {
-    const harvest = harvests.find((harvest) => harvest.harvest_id === id);
-    setCurrentHarvest(harvest); // Pre-fill the modal with harvest data
-    setEditMode(id); // Set edit mode to the selected harvest ID
-    setIsModalOpen(true); // Open the modal
-  };
-
-  // Handle deleting a harvest
-  const handleDeleteHarvest = (id) => {
-    const filteredHarvests = harvests.filter((harvest) => harvest.harvest_id !== id);
-    setHarvests(filteredHarvests);
   };
 
   return (
     <div>
-      {/* Title Section for Harvest Page */}
+      {/* Title Section */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-semibold text-green-700 font-serif flex items-center gap-2">
-          <PlusCircle className="w-8 h-8 text-green-600" />
+        <h2 className="text-3xl font-semibold text-black font-serif flex items-center gap-2">
+          <PlusCircle className="w-8 h-8 text-blue-600" />
           Harvests
         </h2>
-        <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-green-700 text-white hover:bg-green-600 rounded-full px-4 py-2">
+        <Button
+          onClick={openAddModal}
+          className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-500 rounded-full px-4 py-2"
+        >
           <PlusCircle className="w-5 h-5" />
           Add Harvest
         </Button>
@@ -88,74 +141,118 @@ const HarvestSection = ({ harvests, setHarvests }) => {
             key={harvest.harvest_id}
             className="relative bg-green-100 shadow-lg rounded-lg p-6 hover:scale-105 transform transition-all border-b-2 border-green-300"
           >
-            {/* Edit and Delete Icons side by side */}
+            {/* Edit and Delete Buttons */}
             <div className="absolute top-2 right-2 flex gap-2">
               <button
                 onClick={() => handleEditHarvest(harvest.harvest_id)}
-                className="absolute top-2 right-11 text-green-600 cursor-pointer hover:text-gray-800 transition-all"
+                className="text-yellow-500 hover:text-yellow-700 cursor-pointer transition-colors"
+                title="Edit"
               >
-                <Edit className="w-5 h-5" />
+                <Edit className="w-6 h-6" />
               </button>
               <button
                 onClick={() => handleDeleteHarvest(harvest.harvest_id)}
-                className="absolute top-2 right-3 text-green-600 cursor-pointer hover:text-gray-800 transition-all"
+                className="text-red-600 hover:text-red-800 cursor-pointer transition-colors"
+                title="Delete"
               >
-                <Trash className="w-5 h-5" />
+                <Trash className="w-6 h-6" />
               </button>
             </div>
+
             {/* Harvest Info */}
-            <h3 className="text-xl font-semibold text-green-800">{harvest.type}</h3>
-            <p className="text-green-700"><strong>Quantity:</strong> {harvest.quantity}</p>
-            <p className="text-green-700"><strong>Harvest Date:</strong> {harvest.harvestDate}</p>
-            <p className="text-green-700"><strong>Note:</strong> {harvest.note}</p>
+            <p className="text-black font-semibold mb-2">
+              <strong>ID:</strong> {harvest.harvest_id}
+            </p>
+            <h3 className="text-xl font-semibold text-black">{harvest.type}</h3>
+            <p className="text-black">
+              <strong>Quantity:</strong> {harvest.quantity}
+            </p>
+            <p className="text-black">
+              <strong>Harvest Date:</strong>{" "}
+              {new Date(harvest.harvestDate).toLocaleDateString()}
+            </p>
+            <p className="text-black">
+              <strong>Note:</strong> {harvest.note}
+            </p>
           </Card>
         ))}
       </div>
 
-      {/* Modal for Adding/Editing Harvest */}
+      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-20">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+              aria-label="Close modal"
             >
               &times;
             </button>
-            <h2 className="text-xl font-semibold mb-4 text-green-700">{editMode ? 'Edit Harvest' : 'Add New Harvest'}</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black">
+              {editMode ? "Edit Harvest" : "Add New Harvest"}
+            </h2>
             <form onSubmit={handleAddOrEditHarvestSubmit}>
               <div className="space-y-4">
+                {!editMode && (
+                  <Input
+                    name="harvest_id"
+                    placeholder="Harvest ID"
+                    value={currentHarvest.harvest_id}
+                    onChange={handleInputChange}
+                    required
+                    className="border-2 border-black"
+                  />
+                )}
                 <Input
                   name="type"
                   placeholder="Type"
                   value={currentHarvest.type}
                   onChange={handleInputChange}
-                  className="border-2 border-green-500"
+                  required
+                  className="border-2 border-black"
                 />
                 <Input
                   name="quantity"
                   placeholder="Quantity"
                   value={currentHarvest.quantity}
                   onChange={handleInputChange}
-                  className="border-2 border-green-500"
+                  required
+                  className="border-2 border-black"
                 />
                 <Input
+                  type="date"
                   name="harvestDate"
                   placeholder="Harvest Date"
                   value={currentHarvest.harvestDate}
                   onChange={handleInputChange}
-                  className="border-2 border-green-500"
+                  required
+                  className="border-2 border-black"
                 />
                 <Input
                   name="note"
                   placeholder="Note"
                   value={currentHarvest.note}
                   onChange={handleInputChange}
-                  className="border-2 border-green-500"
+                  className="border-2 border-black"
                 />
+
                 <div className="flex justify-end space-x-4 mt-4">
-                  <Button onClick={() => setIsModalOpen(false)} className="bg-red-600 hover:bg-red-500">Cancel</Button>
-                  <Button type="submit" className="bg-green-700 hover:bg-green-600">{editMode ? 'Update Harvest' : 'Add Harvest'}</Button>
+                  <Button
+                    onClick={() => setIsModalOpen(false)}
+                    className="bg-red-600 hover:bg-red-500"
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className={`${
+                      editMode ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-600 hover:bg-blue-500"
+                    } text-white`}
+                  >
+                    {editMode ? "Update Harvest" : "Add Harvest"}
+                  </Button>
                 </div>
               </div>
             </form>

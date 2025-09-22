@@ -85,6 +85,10 @@ app.use("/Farmer", FarmerRouter);
 const PlantRouter = require("./routes/Plant");
 app.use("/Plant", PlantRouter);
 
+//Harvest route
+const HarvestRouter = require("./routes/Harvest");
+app.use("/Harvest", HarvestRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
