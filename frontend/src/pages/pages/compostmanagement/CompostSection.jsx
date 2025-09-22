@@ -159,10 +159,10 @@ const CompostSection = () => {
           <Card key={c.compost_id} className="relative bg-green-50 shadow-lg rounded-lg p-6 border-b-2 border-green-300">
             {/* Edit and Delete Buttons */}
             <div className="absolute top-4 right-6 flex gap-2">
-              <button onClick={() => handleEdit(c.compost_id)} className="text-yellow-500 hover:text-yellow-600">
+              <button onClick={() => handleEdit(c.compost_id)} className="text-green-500 hover:text-green-600">
                 <Edit className="w-6 h-6" />
               </button>
-              <button onClick={() => handleDelete(c.compost_id)} className="text-red-600 hover:text-red-800">
+              <button onClick={() => handleDelete(c.compost_id)} className="text-green-600 hover:text-green-800">
                 <Trash className="w-6 h-6" />
               </button>
             </div>

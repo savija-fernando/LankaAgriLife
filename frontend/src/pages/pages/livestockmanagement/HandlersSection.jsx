@@ -124,10 +124,10 @@ const HandlersSection = () => {
           <Card key={handler.handler_id} className="relative bg-white shadow-lg rounded-lg p-6 hover:scale-105 transition">
             {/* Edit and Delete Buttons */}
             <div className="absolute top-4 right-4 flex gap-2">
-              <button onClick={() => handleEdit(handler.handler_id)} className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500">
+              <button onClick={() => handleEdit(handler.handler_id)} className="text-yellow-500 hover:text-yellow-700 cursor-pointer transition-colors">
                 <Edit className="w-5 h-5" />
               </button>
-              <button onClick={() => handleDelete(handler.handler_id)} className="bg-red-600 text-white p-1 rounded hover:bg-red-700">
+              <button onClick={() => handleDelete(handler.handler_id)} className="text-red-600 hover:text-red-800 cursor-pointer transition-colors">
                 <Trash className="w-5 h-5" />
               </button>
             </div>

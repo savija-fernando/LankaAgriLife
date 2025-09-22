@@ -19,7 +19,6 @@ const animalSchema = new mongoose.Schema({
   },
   healthRecord: {
     type: String,
-    required: true,
   },
   dateOfBirth: {
     type: Date

@@ -19,9 +19,8 @@ export default function Dashboard() {
       </div>
 
       {/* Middle Section */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-1">
         <RecentActivities />
-        <QuickActions />
       </div>
 
       {/* Farm Performance */}
