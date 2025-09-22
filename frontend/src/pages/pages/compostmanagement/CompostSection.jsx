@@ -9,7 +9,7 @@ import {
   getAllCompost,
   addCompost,
   updateCompost,
-  deleteCompostItem
+  deleteCompost
 } from '../../../api/compostAPI';
 
 const CompostSection = () => {
@@ -112,7 +112,7 @@ const CompostSection = () => {
   const handleDelete = async (compost_id) => {
     if (!window.confirm("Delete this compost record?")) return;
     try {
-      await deleteCompostItem(compost_id);
+      await deleteCompost(compost_id);
       alert("Compost record deleted successfully");
       fetchComposts();
     } catch (err) {
