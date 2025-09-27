@@ -3,7 +3,7 @@ export default function RecentActivities() {
     { text: "Corn harvest completed - Field A", time: "2 hours ago", tag: "harvest" },
     { text: "Compost batch #CB-2024-05 ready", time: "4 hours ago", tag: "compost" },
     { text: "Milk production recorded - 150L", time: "6 hours ago", tag: "livestock" },
-    { text: "Payment received - $2,500", time: "1 day ago", tag: "revenue" },
+    { text: "Payment received - Rs.2,500", time: "1 day ago", tag: "revenue" },
     { text: "Low stock alert - Organic fertilizer", time: "2 days ago", tag: "inventory" },
   ];
 

@@ -14,7 +14,7 @@ export default function Dashboard() {
         <Card title="Active Crops" value="24" sub="+3 from last month" />
         <Card title="Compost Batches" value="8" sub="2 in progress" />
         <Card title="Livestock" value="156" sub="+12 this quarter" />
-        <Card title="Monthly Revenue" value="$24,580" sub="+18% from last month" />
+        <Card title="Monthly Revenue" value="Rs.24,580" sub="+18% from last month" />
         <Card title="Inventory Items" value="89" sub="5 low stock alerts" />
       </div>
 

@@ -14,7 +14,7 @@ import Dashboard from "./pages/pages/Dashboard";
 import CropManagement from "./pages/pages/cropmanagement/CropManagement";
 import CompostManagement from "./pages/pages/compostmanagement/CompostManagement";
 import LivestockManagement from "./pages/pages/livestockmanagement/LivestockManagement";
-import RevenueManagement from "./pages/pages/RevenueManagement";
+import RevenueManagement from "./pages/pages/revenuemanagement/RevenueManagement";
 import InventoryManagement from "./pages/pages/InventoryManagement";
 import Farmers from "./pages/pages/Farmers";
 import Handlers from "./pages/pages/Handlers";
