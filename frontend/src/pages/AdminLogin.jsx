@@ -8,11 +8,13 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Form submit handler
   const handleLogin = async (e) => {
     e.preventDefault(); // prevent page reload
     setError(""); // reset error
+    setLoading(true);
 
     try {
       const res = await fetch("http://localhost:8070/AdminDetails/login", {
@@ -26,12 +28,15 @@ const AdminLogin = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // Save token (important for ProtectedRoute)
+        // Save token
         localStorage.setItem("adminToken", data.token);
+
+        // Save admin role or name
+        localStorage.setItem("adminRole", data.admin.role || "Admin");
+        localStorage.setItem("adminEmail", data.admin.email); // optional if you want email
 
         // Navigate to dashboard
         navigate("/dashboard/");
-
         console.log("Login successful", data);
       } else {
         setError(data.message || "Login failed. Please try again.");
@@ -39,6 +44,8 @@ const AdminLogin = () => {
     } catch (err) {
       console.error("Network error:", err);
       setError("An error occurred. Please check your connection.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,9 +95,14 @@ const AdminLogin = () => {
             />
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 shadow-lg transition-transform hover:-translate-y-0.5"
+              disabled={loading}
+              className={`w-full py-3 rounded-xl font-semibold shadow-lg transition-transform hover:-translate-y-0.5 ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 text-white hover:bg-green-700"
+              }`}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
@@ -116,7 +128,8 @@ const AdminLogin = () => {
             Manage LankaAgriLife Platform
           </p>
           <p className="text-gray-300 text-sm">
-            Access insights, moderate users, and oversee platform activity with powerful admin tools.
+            Access insights, moderate users, and oversee platform activity with
+            powerful admin tools.
           </p>
         </div>
       </div>

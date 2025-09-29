@@ -1,16 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import useTypingEffect from "../hooks/useTypingEffect"; // adjust path accordingly
 
 const Hero = () => {
+  const paragraphText =
+    "Transform your ideas into sustainable agriculture with our platform. Manage crops, livestock, and resources efficiently with modern tools.";
+  
+  const typedText = useTypingEffect(paragraphText, 40); // 40ms speed, adjust to your liking
+
   return (
     <section className="bg-gradient-to-r from-green-100 via-green-200 to-green-300 text-center py-20 px-4">
       <h1 className="text-4xl sm:text-5xl font-extrabold text-green-700 leading-tight">
         Grow Something Amazing Today
       </h1>
 
-      <p className="mt-4 text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
-        Transform your ideas into sustainable agriculture with our platform.
-        Manage crops, livestock, and resources efficiently with modern tools.
+      <p className="mt-4 text-base sm:text-lg text-gray-700 max-w-2xl mx-auto whitespace-pre-line">
+        {typedText}
+        <span className="border-r-2 border-gray-700 animate-blink ml-1">&nbsp;</span>
       </p>
 
       <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">

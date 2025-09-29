@@ -21,11 +21,16 @@ import Handlers from "./pages/pages/Handlers";
 import Analytics from "./pages/pages/Analytics";
 import Settings from "./pages/pages/Settings";
 
+// Voice navigation component
+import VoiceCommandHandler from "./components/VoiceCommandHandler"; // ✅ add this
 
 function App() {
   return (
     <Router>
       <div className="font-sans">
+        {/* ✅ Voice navigation always running */}
+        <VoiceCommandHandler />
+
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />

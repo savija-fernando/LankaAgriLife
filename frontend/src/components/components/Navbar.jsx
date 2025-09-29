@@ -1,6 +1,23 @@
-import { Bell, User, Search } from "lucide-react";
+import { Bell, User, Search, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const [adminRole, setAdminRole] = useState("Admin");
+
+  useEffect(() => {
+    const role = localStorage.getItem("adminRole");
+    if (role) setAdminRole(role);
+  }, []);
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminRole");
+    navigate("/admin-login");
+  };
+
   return (
     <header className="flex items-center justify-between bg-white border-b shadow-sm px-6 py-3">
       {/* Search Bar */}
@@ -23,13 +40,17 @@ export default function Navbar() {
           </span>
         </button>
 
-        {/* User Avatar */}
-        <button className="flex items-center gap-2 text-gray-700 hover:text-green-700 transition">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+        {/* User Menu */}
+        <div className="flex items-center gap-3 text-gray-700">
+          <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
             <User size={18} />
           </div>
-          <span className="hidden sm:inline text-sm font-medium">Admin</span>
-        </button>
+          <span className="hidden sm:inline text-sm font-medium">
+            {adminRole}
+          </span>
+
+
+        </div>
       </div>
     </header>
   );
