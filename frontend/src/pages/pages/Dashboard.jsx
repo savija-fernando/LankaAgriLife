@@ -1,6 +1,7 @@
 import Card from "../../components/components/Card";
 import RecentActivities from "../../components/components/RecentActivities";
 import PerformanceCard from "../../components/components/PerformanceCard";
+import WeatherCard from "../../components/WeatherWidget";
 
 export default function Dashboard() {
   return (
@@ -88,23 +89,9 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="space-y-6">
-          <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Weather Today</h3>
-                <p className="text-cyan-100 text-sm">Perfect for farming activities</p>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold">26°C</div>
-                <div className="text-cyan-100 text-sm">Sunny 🌞</div>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-between text-sm">
-              <span>Humidity: 65%</span>
-              <span>Wind: 12 km/h</span>
-            </div>
-          </div>
+       <div className="space-y-6">
+          {/* Live Weather */}
+          <WeatherCard />
 
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
