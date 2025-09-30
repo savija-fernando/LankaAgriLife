@@ -35,10 +35,10 @@ const Footer = () => {
             {/* Social Links */}
             <div className="flex justify-center md:justify-start space-x-4 mt-6">
               {[
-                { name: "Facebook", icon: facebookIcon, color: "hover:bg-blue-500" },
+                { name: "Facebook", icon: facebookIcon, color: "hover:bg-blue-600" },
                 { name: "Twitter", icon: twitterIcon, color: "hover:bg-gray-900" },
                 { name: "Instagram", icon: instagramIcon, color: "hover:bg-pink-500" },
-                { name: "GitHub", icon: githubIcon, color: "hover:bg-gray-700" },
+                { name: "GitHub", icon: githubIcon, color: "hover:bg-gray-800" },
               ].map((social) => (
                 <a
                   key={social.name}
