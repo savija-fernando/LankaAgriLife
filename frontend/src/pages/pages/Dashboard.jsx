@@ -1,9 +1,58 @@
+import React, { useState, useEffect } from 'react';
 import Card from "../../components/components/Card";
 import RecentActivities from "../../components/components/RecentActivities";
 import PerformanceCard from "../../components/components/PerformanceCard";
 import WeatherCard from "../../components/WeatherWidget";
+import { getAllRevenue } from "../../api/revenueAPI"; 
 
 export default function Dashboard() {
+  const [revenues, setRevenues] = useState([]);
+  const [profitData, setProfitData] = useState({
+    totalProfit: 0,
+    businessHealth: 'Healthy',
+    healthColor: 'text-green-600'
+  });
+
+  // Fetch revenue data and calculate profit
+  const fetchRevenueData = async () => {
+    try {
+      const res = await getAllRevenue();
+      const revenueData = res.data || [];
+      setRevenues(revenueData);
+
+      // Calculate profit metrics
+      const totalProfit = revenueData.reduce((acc, r) => acc + Number(r.profit || 0), 0);
+      const businessHealth = totalProfit >= 0 ? 'Healthy' : 'Critical';
+      const healthColor = totalProfit >= 0 ? 'text-green-600' : 'text-red-600';
+
+      setProfitData({
+        totalProfit,
+        businessHealth,
+        healthColor
+      });
+    } catch (err) {
+      console.error('Error fetching revenue data:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchRevenueData();
+    
+    // Optional: Set up real-time updates (polling every 30 seconds)
+    const interval = setInterval(fetchRevenueData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Format profit for display
+  const formatProfit = (profit) => {
+    return `Rs.${Math.abs(profit).toLocaleString()} ${profit < 0 ? 'Loss' : 'Profit'}`;
+  };
+
+  // Get profit trend indicator
+  const getProfitTrend = (profit) => {
+    return profit >= 0 ? 'up' : 'down';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50/30 p-6">
       {/* Header */}
@@ -51,21 +100,28 @@ export default function Dashboard() {
             icon="🐄"
           />
         </div>
+        
+        {/* Dynamic Profit Card */}
         <div className="transform hover:scale-105 transition-all duration-300 hover:-rotate-1">
           <Card 
-            title="Monthly Revenue" 
-            value="Rs.24,580" 
-            sub="+18% from last month"
-            className="bg-gradient-to-br from-purple-400 to-pink-500 text-white shadow-lg hover:shadow-2xl border-0"
-            icon="💰"
+            title="Current Profit" 
+            value={formatProfit(profitData.totalProfit)} 
+            sub={`Status: ${profitData.businessHealth}`}
+            className={`bg-gradient-to-br ${
+              profitData.totalProfit >= 0 
+                ? 'from-green-400 to-emerald-500' 
+                : 'from-red-400 to-rose-500'
+            } text-white shadow-lg hover:shadow-2xl border-0`}
+            icon={profitData.totalProfit >= 0 ? "💰" : "📉"}
           />
         </div>
+        
         <div className="transform hover:scale-105 transition-all duration-300 hover:rotate-1">
           <Card 
             title="Inventory Items" 
             value="89" 
             sub="5 low stock alerts"
-            className="bg-gradient-to-br from-red-400 to-rose-500 text-white shadow-lg hover:shadow-2xl border-0"
+            className="bg-gradient-to-br from-purple-400 to-pink-500 text-white shadow-lg hover:shadow-2xl border-0"
             icon="📦"
           />
         </div>
@@ -89,9 +145,49 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Stats */}
-       <div className="space-y-6">
+        <div className="space-y-6">
           {/* Live Weather */}
           <WeatherCard />
+
+          {/* Profit Health Status */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Profit Status</h3>
+              <span className={`text-xs px-2 py-1 rounded-full font-bold ${
+                profitData.totalProfit >= 0 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {profitData.businessHealth}
+              </span>
+            </div>
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${profitData.healthColor} mb-2`}>
+                  {formatProfit(profitData.totalProfit)}
+                </div>
+                <div className="text-sm text-gray-600">
+                  Based on {revenues.length} revenue entries
+                </div>
+              </div>
+              
+              {/* Health Indicator */}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    profitData.totalProfit >= 0 ? 'bg-green-500' : 'bg-red-500'
+                  }`}
+                  style={{ 
+                    width: `${Math.min(Math.abs(profitData.totalProfit) / 10000 * 100, 100)}%` 
+                  }}
+                ></div>
+              </div>
+              
+              <div className="text-center text-xs text-gray-500">
+                {profitData.totalProfit >= 0 ? '✅ Positive cash flow' : '⚠️ Review expenses needed'}
+              </div>
+            </div>
+          </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
@@ -140,14 +236,20 @@ export default function Dashboard() {
             icon="⭐"
           />
         </div>
+        
+        {/* Dynamic Profit Margin Card */}
         <div className="transform hover:scale-105 transition-all duration-300 hover:rotate-1">
           <PerformanceCard 
             title="Profit Margin" 
-            value="68%" 
-            sub="This quarter"
-            trend="up"
-            className="bg-gradient-to-br from-blue-400 via-indigo-500 to-blue-600 text-white shadow-xl hover:shadow-2xl border-0"
-            icon="💹"
+            value={`${profitData.totalProfit >= 0 ? '+' : ''}${Math.round((profitData.totalProfit / Math.max(revenues.reduce((acc, r) => acc + Number(r.salesData || 0), 1)) * 100) || 0)}%`}
+            sub="Current profit ratio"
+            trend={getProfitTrend(profitData.totalProfit)}
+            className={`bg-gradient-to-br ${
+              profitData.totalProfit >= 0 
+                ? 'from-blue-400 via-indigo-500 to-blue-600' 
+                : 'from-red-400 via-rose-500 to-red-600'
+            } text-white shadow-xl hover:shadow-2xl border-0`}
+            icon={profitData.totalProfit >= 0 ? "💹" : "📉"}
           />
         </div>
       </div>
@@ -166,9 +268,15 @@ export default function Dashboard() {
           <div className="text-2xl font-bold">15</div>
           <div className="text-sm opacity-90">Active Workers</div>
         </div>
-        <div className="bg-gradient-to-br from-lime-400 to-green-500 rounded-2xl p-4 text-white text-center shadow-lg hover:shadow-xl transition-all duration-300">
-          <div className="text-2xl font-bold">100%</div>
-          <div className="text-sm opacity-90">Organic Certified</div>
+        
+        {/* Business Health Card */}
+        <div className={`rounded-2xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 ${
+          profitData.totalProfit >= 0 
+            ? 'bg-gradient-to-br from-lime-400 to-green-500 text-white' 
+            : 'bg-gradient-to-br from-orange-400 to-red-500 text-white'
+        }`}>
+          <div className="text-2xl font-bold">{profitData.businessHealth}</div>
+          <div className="text-sm opacity-90">Business Health</div>
         </div>
       </div>
     </div>
