@@ -4,13 +4,21 @@ import RecentActivities from "../../components/components/RecentActivities";
 import PerformanceCard from "../../components/components/PerformanceCard";
 import WeatherCard from "../../components/WeatherWidget";
 import { getAllRevenue } from "../../api/revenueAPI"; 
+import { getAllInventory } from "../../api/inventoryAPI"; // Add inventory API import
 
 export default function Dashboard() {
   const [revenues, setRevenues] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [profitData, setProfitData] = useState({
     totalProfit: 0,
     businessHealth: 'Healthy',
     healthColor: 'text-green-600'
+  });
+  const [inventoryData, setInventoryData] = useState({
+    totalItems: 0,
+    lowStockItems: 0,
+    totalValue: 0,
+    lowStockAlerts: 0
   });
 
   // Fetch revenue data and calculate profit
@@ -35,11 +43,40 @@ export default function Dashboard() {
     }
   };
 
+  // Fetch inventory data and calculate metrics
+  const fetchInventoryData = async () => {
+    try {
+      const res = await getAllInventory();
+      const inventoryData = res.data || [];
+      setInventory(inventoryData);
+
+      // Calculate inventory metrics
+      const totalItems = inventoryData.length;
+      const lowStockItems = inventoryData.filter(item => item.stockLevel <= item.threshold).length;
+      const totalValue = inventoryData.reduce((sum, item) => sum + (item.stockLevel * item.unitPrice), 0);
+      const lowStockAlerts = lowStockItems;
+
+      setInventoryData({
+        totalItems,
+        lowStockItems,
+        totalValue,
+        lowStockAlerts
+      });
+    } catch (err) {
+      console.error('Error fetching inventory data:', err);
+    }
+  };
+
   useEffect(() => {
     fetchRevenueData();
+    fetchInventoryData();
     
-    // Optional: Set up real-time updates (polling every 30 seconds)
-    const interval = setInterval(fetchRevenueData, 30000);
+    // Set up real-time updates (polling every 30 seconds)
+    const interval = setInterval(() => {
+      fetchRevenueData();
+      fetchInventoryData();
+    }, 30000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -48,9 +85,28 @@ export default function Dashboard() {
     return `Rs.${Math.abs(profit).toLocaleString()} ${profit < 0 ? 'Loss' : 'Profit'}`;
   };
 
+  // Format currency for display
+  const formatCurrency = (amount) => {
+    return `Rs.${amount.toLocaleString()}`;
+  };
+
   // Get profit trend indicator
   const getProfitTrend = (profit) => {
     return profit >= 0 ? 'up' : 'down';
+  };
+
+  // Get inventory status color
+  const getInventoryStatusColor = (lowStockAlerts) => {
+    return lowStockAlerts > 5 ? 'from-red-400 to-rose-500' : 
+           lowStockAlerts > 2 ? 'from-orange-400 to-amber-500' : 
+           'from-purple-400 to-pink-500';
+  };
+
+  // Get inventory status text
+  const getInventoryStatusText = (lowStockAlerts) => {
+    return lowStockAlerts > 5 ? 'Critical Stock' : 
+           lowStockAlerts > 2 ? 'Low Stock Alert' : 
+           'Stock Level Good';
   };
 
   return (
@@ -116,12 +172,13 @@ export default function Dashboard() {
           />
         </div>
         
+        {/* Dynamic Inventory Card */}
         <div className="transform hover:scale-105 transition-all duration-300 hover:rotate-1">
           <Card 
             title="Inventory Items" 
-            value="89" 
-            sub="5 low stock alerts"
-            className="bg-gradient-to-br from-purple-400 to-pink-500 text-white shadow-lg hover:shadow-2xl border-0"
+            value={inventoryData.totalItems.toString()} 
+            sub={`${inventoryData.lowStockAlerts} low stock alerts`}
+            className={`bg-gradient-to-br ${getInventoryStatusColor(inventoryData.lowStockAlerts)} text-white shadow-lg hover:shadow-2xl border-0`}
             icon="📦"
           />
         </div>
@@ -189,14 +246,76 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Inventory Status */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Inventory Status</h3>
+              <span className={`text-xs px-2 py-1 rounded-full font-bold ${
+                inventoryData.lowStockAlerts > 5 ? 'bg-red-100 text-red-700' :
+                inventoryData.lowStockAlerts > 2 ? 'bg-orange-100 text-orange-700' :
+                'bg-green-100 text-green-700'
+              }`}>
+                {getInventoryStatusText(inventoryData.lowStockAlerts)}
+              </span>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{inventoryData.totalItems}</div>
+                  <div className="text-xs text-gray-600">Total Items</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{inventoryData.lowStockItems}</div>
+                  <div className="text-xs text-gray-600">Low Stock</div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-lg font-bold text-gray-900 mb-1">
+                  {formatCurrency(inventoryData.totalValue)}
+                </div>
+                <div className="text-xs text-gray-600">Total Inventory Value</div>
+              </div>
+              
+              {/* Stock Level Indicator */}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    inventoryData.lowStockAlerts > 5 ? 'bg-red-500' :
+                    inventoryData.lowStockAlerts > 2 ? 'bg-orange-500' :
+                    'bg-green-500'
+                  }`}
+                  style={{ 
+                    width: `${Math.max(100 - (inventoryData.lowStockItems / inventoryData.totalItems * 100), 10)}%` 
+                  }}
+                ></div>
+              </div>
+              
+              <div className="text-center text-xs text-gray-500">
+                {inventoryData.lowStockAlerts > 0 ? 
+                  `⚠️ ${inventoryData.lowStockAlerts} items need restocking` : 
+                  '✅ All items well stocked'
+                }
+              </div>
+            </div>
+          </div>
+
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Notifications</h3>
               <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs px-2 py-1 rounded-full font-bold">
-                3 new
+                {inventoryData.lowStockAlerts > 0 ? inventoryData.lowStockAlerts + 2 : 3} new
               </span>
             </div>
             <div className="space-y-3">
+              {inventoryData.lowStockAlerts > 0 && (
+                <div className="flex items-center space-x-3 p-3 bg-red-50 rounded-xl border border-red-200">
+                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-gray-700 font-medium">
+                    {inventoryData.lowStockAlerts} items are low on stock
+                  </span>
+                </div>
+              )}
               <div className="flex items-center space-x-3 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
                 <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
                 <span className="text-sm text-gray-700 font-medium">Watering scheduled in 2 hours</span>

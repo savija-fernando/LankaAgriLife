@@ -41,7 +41,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
           <div className="relative">
             <img
-              src="../src/assets/logo.png"
+              src="../src/assets/icon.png"
               alt="AgriAdmin Logo"
               className="w-12 h-12 object-contain transition-transform duration-300 hover:scale-110"
             />
