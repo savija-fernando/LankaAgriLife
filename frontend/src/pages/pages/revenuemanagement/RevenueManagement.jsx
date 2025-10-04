@@ -33,7 +33,6 @@ const RevenueManagement = () => {
   }, []);
 
   // Calculate stats for the header
-  const totalRevenue = revenues.reduce((sum, revenue) => sum + (revenue.amount || 0), 0);
   const totalEntries = revenues.length;
   const activeSupervisors = supervisors.length;
 
@@ -70,22 +69,9 @@ const RevenueManagement = () => {
             </Button>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Total Revenue</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">
-                    ${totalRevenue.toLocaleString()}
-                  </p>
-                </div>
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <FaMoneyBillWave className="w-6 h-6 text-green-600" />
-                </div>
-              </div>
-            </div>
-
+          {/* Stats Cards - Removed Total Revenue */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Total Entries Card */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-blue-500 hover:shadow-xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
@@ -100,6 +86,7 @@ const RevenueManagement = () => {
               </div>
             </div>
 
+            {/* Active Supervisors Card */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500 hover:shadow-xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
