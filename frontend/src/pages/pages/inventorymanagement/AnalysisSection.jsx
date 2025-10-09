@@ -16,16 +16,235 @@ const AnalysisSection = ({ items = [] }) => {
   const averageStock =
     items.length > 0 ? (totalStock / items.length).toFixed(1) : 0;
 
+  // Function to generate and download PDF report
+  const downloadPDFReport = () => {
+    // Create a new window for PDF content
+    const printWindow = window.open('', '_blank');
+    
+    // Get current date for the report
+    const currentDate = new Date().toLocaleDateString();
+    
+    // Generate report content
+    const reportContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Inventory Analysis Report</title>
+        <style>
+          body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            color: #333;
+          }
+          .header { 
+            text-align: center; 
+            margin-bottom: 30px;
+            border-bottom: 2px solid #10b981;
+            padding-bottom: 20px;
+          }
+          .header h1 { 
+            color: #10b981; 
+            margin: 0;
+            font-size: 28px;
+          }
+          .header p { 
+            color: #666; 
+            margin: 5px 0 0 0;
+          }
+          .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+          }
+          .summary-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            background: #f9fafb;
+          }
+          .summary-card h3 {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+          }
+          .summary-card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            color: #1f2937;
+          }
+          .section {
+            margin-bottom: 25px;
+          }
+          .section h2 {
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 18px;
+          }
+          .item-list {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          .item-list th {
+            background-color: #f3f4f6;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            font-weight: bold;
+          }
+          .item-list td {
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+          }
+          .low-stock { background-color: #fef2f2; }
+          .high-stock { background-color: #f0fdf4; }
+          .no-items {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 20px;
+          }
+          .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Inventory Analysis Report</h1>
+          <p>Generated on ${currentDate}</p>
+        </div>
+
+        <div class="summary-cards">
+          <div class="summary-card">
+            <h3>Total Stock</h3>
+            <p>${totalStock.toLocaleString()} units</p>
+          </div>
+          <div class="summary-card">
+            <h3>Low Stock Items</h3>
+            <p>${lowStockItems.length}</p>
+          </div>
+          <div class="summary-card">
+            <h3>High Stock Items</h3>
+            <p>${highStockItems.length}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Average Stock</h3>
+            <p>${averageStock} units</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Low Stock Items (Below Threshold)</h2>
+          ${
+            lowStockItems.length === 0 
+              ? '<div class="no-items">No low stock items - All items are well stocked!</div>'
+              : `
+                <table class="item-list">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Current Stock</th>
+                      <th>Threshold</th>
+                      <th>Units Needed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${lowStockItems.map(item => `
+                      <tr class="low-stock">
+                        <td>${item.itemName || 'N/A'}</td>
+                        <td>${item.stockLevel} units</td>
+                        <td>${item.threshold || 0} units</td>
+                        <td>${Math.max(0, (item.threshold || 0) - item.stockLevel)} units</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              `
+          }
+        </div>
+
+        <div class="section">
+          <h2>High Stock Items (Above 100 units)</h2>
+          ${
+            highStockItems.length === 0 
+              ? '<div class="no-items">No high stock items - All items are within normal range</div>'
+              : `
+                <table class="item-list">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Current Stock</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${highStockItems.map(item => `
+                      <tr class="high-stock">
+                        <td>${item.itemName || 'N/A'}</td>
+                        <td>${item.stockLevel} units</td>
+                        <td>Well above minimum threshold</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              `
+          }
+        </div>
+
+        <div class="footer">
+          <p>Inventory Management System Report | Generated on ${currentDate}</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Write content and trigger print
+    printWindow.document.write(reportContent);
+    printWindow.document.close();
+    
+    // Wait for content to load then trigger print
+    setTimeout(() => {
+      printWindow.print();
+      // Optional: Close window after print dialog closes
+      // printWindow.close();
+    }, 250);
+  };
+
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl font-bold text-gray-800 font-serif bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-          Inventory Analysis
-        </h2>
-        <p className="text-gray-600 text-lg">Real-time stock overview and insights</p>
+      {/* Header with Download Button */}
+      <div className="text-center space-y-4">
+        <div className="flex justify-between items-center">
+          <div></div> {/* Empty div for spacing */}
+          <div className="text-center space-y-2 flex-1">
+            <h2 className="text-4xl font-bold text-gray-800 font-serif bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Inventory Analysis
+            </h2>
+            <p className="text-gray-600 text-lg">Real-time stock overview and insights</p>
+          </div>
+          <button
+            onClick={downloadPDFReport}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 font-semibold"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Download Report
+          </button>
+        </div>
       </div>
 
+      {/* Rest of your existing JSX remains the same */}
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="group p-6 rounded-2xl shadow-lg border border-blue-100 bg-gradient-to-br from-blue-50 to-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1">

@@ -59,7 +59,7 @@ const VoiceCommandHandler = () => {
       </button>
 
       <p className="text-xs text-gray-500 mt-2">
-        Try saying: “Go to dashboard”, “Go to inventory”, etc.
+        Try saying: “Go to Home”, “Open Login”, etc.
       </p>
     </div>
   );
