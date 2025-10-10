@@ -4,7 +4,7 @@ import RecentActivities from "../../components/components/RecentActivities";
 import PerformanceCard from "../../components/components/PerformanceCard";
 import WeatherCard from "../../components/WeatherWidget";
 import { getAllRevenue } from "../../api/revenueAPI"; 
-import { getAllInventory } from "../../api/inventoryAPI"; // Add inventory API import
+import { getAllInventory } from "../../api/inventoryAPI";
 
 export default function Dashboard() {
   const [revenues, setRevenues] = useState([]);
@@ -20,6 +20,9 @@ export default function Dashboard() {
     totalValue: 0,
     lowStockAlerts: 0
   });
+  
+  // Notification state
+  const [notificationCount, setNotificationCount] = useState(3);
 
   // Fetch revenue data and calculate profit
   const fetchRevenueData = async () => {
@@ -62,6 +65,10 @@ export default function Dashboard() {
         totalValue,
         lowStockAlerts
       });
+
+      // Update notification count based on low stock alerts
+      const newNotificationCount = 3 + lowStockAlerts;
+      setNotificationCount(newNotificationCount);
     } catch (err) {
       console.error('Error fetching inventory data:', err);
     }
@@ -111,6 +118,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50/30 p-6">
+     
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -300,11 +309,12 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Notifications Panel */}
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200/60 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">Notifications</h3>
               <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs px-2 py-1 rounded-full font-bold">
-                {inventoryData.lowStockAlerts > 0 ? inventoryData.lowStockAlerts + 2 : 3} new
+                {notificationCount} new
               </span>
             </div>
             <div className="space-y-3">
