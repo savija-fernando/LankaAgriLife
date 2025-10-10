@@ -12,23 +12,38 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const links = [
-  { name: "Dashboard", icon: Home, path: "/dashboard" },
-  { name: "Crop Management", icon: Leaf, path: "/dashboard/crops" },
-  { name: "Compost Management", icon: Recycle, path: "/dashboard/compost" },
-  { name: "Livestock Management", icon: Milk, path: "/dashboard/livestock" },
-  { name: "Revenue Management", icon: DollarSign, path: "/dashboard/revenue" },
-  { name: "Inventory Management", icon: Package, path: "/dashboard/inventory" },
-  { name: "Farmers", icon: Wheat, path: "/dashboard/farmers" },
-  { name: "Handlers", icon: Users, path: "/dashboard/handlers" },
-  { name: "Analytics", icon: BarChart, path: "/dashboard/analytics" },
-  { name: "Settings", icon: Settings, path: "/dashboard/settings" },
+// Define all possible links
+const allLinks = [
+  { name: "Dashboard", icon: Home, path: "/dashboard", roles: ["Admin", "Inventory Manager", "Revenue Manager", "Crop Manager", "Livestock Manager", "Compost Manager"] },
+  { name: "Crop Management", icon: Leaf, path: "/dashboard/crops", roles: ["Admin", "Crop Manager"] },
+  { name: "Compost Management", icon: Recycle, path: "/dashboard/compost", roles: ["Admin", "Compost Manager"] },
+  { name: "Livestock Management", icon: Milk, path: "/dashboard/livestock", roles: ["Admin", "Livestock Manager"] },
+  { name: "Revenue Management", icon: DollarSign, path: "/dashboard/revenue", roles: ["Admin", "Revenue Manager"] },
+  { name: "Inventory Management", icon: Package, path: "/dashboard/inventory", roles: ["Admin", "Inventory Manager"] },
+  { name: "Farmers", icon: Wheat, path: "/dashboard/farmers", roles: ["Admin", "Inventory Manager", "Revenue Manager", "Crop Manager", "Livestock Manager", "Compost Manager"] },
+  { name: "Handlers", icon: Users, path: "/dashboard/handlers", roles: ["Admin", "Inventory Manager", "Revenue Manager", "Crop Manager", "Livestock Manager", "Compost Manager"] },
+  { name: "Analytics", icon: BarChart, path: "/dashboard/analytics", roles: ["Admin", "Inventory Manager", "Revenue Manager", "Crop Manager", "Livestock Manager", "Compost Manager"] },
+  { name: "Settings", icon: Settings, path: "/dashboard/settings", roles: ["Admin", "Inventory Manager", "Revenue Manager", "Crop Manager", "Livestock Manager", "Compost Manager"] },
 ];
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
+  const [userRole, setUserRole] = useState("Admin");
+  const [filteredLinks, setFilteredLinks] = useState([]);
+
+  useEffect(() => {
+    // Get user role from localStorage
+    const role = localStorage.getItem("adminRole") || "Admin";
+    setUserRole(role);
+    
+    // Filter links based on user role
+    const accessibleLinks = allLinks.filter(link => 
+      link.roles.includes(role)
+    );
+    setFilteredLinks(accessibleLinks);
+  }, []);
 
   return (
     <aside 
@@ -52,13 +67,14 @@ export default function Sidebar() {
               AgriAdmin
             </h1>
             <p className="text-xs text-gray-500 font-medium">Management Suite</p>
+            <p className="text-xs text-green-600 font-semibold mt-1">{userRole}</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-        {links.map((link, index) => {
+        {filteredLinks.map((link) => {
           const Icon = link.icon;
           return (
             <NavLink
@@ -100,11 +116,6 @@ export default function Sidebar() {
                 size={16} 
                 className="ml-auto text-gray-400 transition-all duration-300 group-hover:text-green-500 group-hover:translate-x-1" 
               />
-              
-              {/* Active indicator dot */}
-              {link.path === "/dashboard" && (
-                <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              )}
             </NavLink>
           );
         })}
@@ -113,7 +124,6 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="p-6 text-center border-t border-green-100 bg-white/80 backdrop-blur-sm">
         <div className="mb-2">
-          
           <p className="text-xs text-gray-600 font-medium">LankaAgriLife</p>
         </div>
         <p className="text-xs text-gray-400 mt-2">
